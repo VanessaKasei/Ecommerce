@@ -2,9 +2,9 @@ import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
 import AdminDashboard from "./Components/Admin/AdminDashboard";
 import Login from "./Components/Auth/Login";
 import Register from "./Components/Auth/Register";
+import Cart from "./Components/User/Cart";
 import Categories from "./Components/User/Categories";
 import Home from "./Components/User/Home";
-
 
 function App() {
   return (
@@ -16,6 +16,7 @@ function App() {
           <Route path="/" element={<Home />}></Route>
           <Route path="/admin" element={<AdminDashboard />}></Route>
           <Route path="/categories" element= {<Categories />}></Route>
+          <Route path="/cart" element={<Cart />}></Route>
         </Routes>
       </div>
     </Router>

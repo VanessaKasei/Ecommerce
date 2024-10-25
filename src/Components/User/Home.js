@@ -43,53 +43,66 @@ const Home = () => {
       <div className="grid grid-cols-2 md:grid-cols-3 gap-3 ">
         {products && products.length > 0 ? (
           products.map((product) => {
-            const hasVariations = product.variations && product.variations.length > 0;
-            const selectedVariation = selectedVariations[product._id] || product.variations?.[0];
+            const hasVariations =
+              product.variations && product.variations.length > 0;
+            const selectedVariation =
+              selectedVariations[product._id] || product.variations?.[0];
 
             return (
               <div key={product._id} className="p-4 border">
                 {/* Display product or selected variation image */}
-                {hasVariations ? (
-                  selectedVariation.image && (
-                    <img
-                      src={selectedVariation.image}
-                      alt={product.name}
-                      style={{ width: "200px", height: "auto" }}
-                    />
-                  )
-                ) : (
-                  product.image && (
-                    <img
-                      src={product.image}
-                      alt={product.name}
-                      className="object-contain"
-                      style={{ width: "100px", height: "auto" }}
-                    />
-                  )
-                )}
+                {hasVariations
+                  ? selectedVariation.image && (
+                      <img
+                        src={selectedVariation.image}
+                        alt={product.name}
+                        style={{ width: "100px", height: "auto" }}
+                      />
+                    )
+                  : product.image && (
+                      <img
+                        src={product.image}
+                        alt={product.name}
+                        className="object-contain"
+                        style={{ width: "100px", height: "auto" }}
+                      />
+                    )}
 
-                <p>{product.name}</p>
+                <p className="font-bold text-lg">{product.name}</p>
 
                 {/* Display price and stock based on variation or product */}
-                <p>Price: ksh{hasVariations ? selectedVariation.price : product.generalPrice}</p>
-                <p>Stock: {hasVariations ? selectedVariation.stock : product.stock}</p>
+                <p>
+                  Price: ksh
+                  {hasVariations
+                    ? selectedVariation.price
+                    : product.generalPrice}
+                </p>
+                <p className="font-semibold">
+                  {hasVariations
+                    ? selectedVariation.stock > 0
+                      ? "In stock"
+                      : "Out of stock"
+                    : product.stock > 0
+                    ? "In stock"
+                    : "Out of stock"}
+                </p>
 
                 {/* Product description */}
                 <p>{product.description}</p>
 
                 {/* Toggle variations button if the product has variations */}
                 {hasVariations && (
-                 <button
-                 className="bg-blue-500 text-white px-2 py-1 mt-2 flex items-center"
-                 onClick={() => handleToggleVariations(product._id)}
-               >
-                 Available variations
-                 {showVariations[product._id] ? (
-                   <FaCaretUp className="ml-2" />
-                 ) : (
-                   <FaCaretDown className="ml-2" />
-                 )}
-               </button>
+                  <button
+                    className="bg-blue-500 text-white px-2 py-1 mt-2 flex items-center"
+                    onClick={() => handleToggleVariations(product._id)}
+                  >
+                    Available variations
+                    {showVariations[product._id] ? (
+                      <FaCaretUp className="ml-2" />
+                    ) : (
+                      <FaCaretDown className="ml-2" />
+                    )}
+                  </button>
                 )}
 
                 {hasVariations && showVariations[product._id] && (
@@ -102,13 +115,16 @@ const Home = () => {
                             ? "bg-teal-500 text-white"
                             : "bg-gray-200"
                         }`}
-                        onClick={() => handleSelectVariation(product._id, variation)}
+                        onClick={() =>
+                          handleSelectVariation(product._id, variation)
+                        }
                       >
                         {variation.size}, {variation.color}
                       </button>
                     ))}
                   </div>
                 )}
+                <button className="bg-teal-700 text-white p-2 rounded-sm mt-2">Add to cart</button>
               </div>
             );
           })
