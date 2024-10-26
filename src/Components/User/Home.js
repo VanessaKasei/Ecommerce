@@ -1,12 +1,16 @@
 import React, { useEffect, useState } from "react";
-import { FaCaretDown, FaCaretUp } from "react-icons/fa"; // Import caret icons
+import { FaCaretDown, FaCaretUp } from "react-icons/fa";
+import { useDispatch } from "react-redux";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { addToCart } from "../../Redux/actions/cartActions";
 
 const Home = () => {
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(true);
   const [products, setProducts] = useState([]);
-  const [selectedVariations, setSelectedVariations] = useState({}); // Store selected variation per product
-  const [showVariations, setShowVariations] = useState({}); // Track if variations are shown for each product
+  const [selectedVariations, setSelectedVariations] = useState({}); 
+  const [showVariations, setShowVariations] = useState({}); 
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -23,7 +27,6 @@ const Home = () => {
     fetchProducts();
   }, []);
 
-  // Toggle showing variations for a specific product
   const handleToggleVariations = (productId) => {
     setShowVariations((prevState) => ({
       ...prevState,
@@ -38,6 +41,12 @@ const Home = () => {
     }));
   };
 
+  const dispatch = useDispatch();
+
+  const handleAddToCart = (product) => {
+    dispatch(addToCart(product));
+    toast.success(`${product.name} added to cart`);
+  };
   return (
     <div className="mx-auto container">
       <div className="grid grid-cols-2 md:grid-cols-3 gap-3 ">
@@ -87,7 +96,6 @@ const Home = () => {
                     : "Out of stock"}
                 </p>
 
-                {/* Product description */}
                 <p>{product.description}</p>
 
                 {/* Toggle variations button if the product has variations */}
@@ -124,7 +132,12 @@ const Home = () => {
                     ))}
                   </div>
                 )}
-                <button className="bg-teal-700 text-white p-2 rounded-sm mt-2">Add to cart</button>
+                <button
+                  onClick={() => handleAddToCart(product)}
+                  className="bg-teal-700 text-white p-2 rounded-md mt-2"
+                >
+                  Add to cart
+                </button>
               </div>
             );
           })
@@ -132,6 +145,7 @@ const Home = () => {
           <p>No products available</p>
         )}
       </div>
+      <ToastContainer />
     </div>
   );
 };
