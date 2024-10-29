@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { FaCaretDown, FaCaretUp } from "react-icons/fa";
 import { useDispatch } from "react-redux";
+import { Link } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { addToCart } from "../../Redux/actions/cartActions";
@@ -44,7 +45,8 @@ const Home = () => {
   const dispatch = useDispatch();
 
   const handleAddToCart = (product) => {
-    dispatch(addToCart(product));
+    const selectedVariation = selectedVariations[product._id] || product.variations[0]
+    dispatch(addToCart(product, selectedVariation));
     toast.success(`${product.name} added to cart`);
   };
   return (
@@ -145,6 +147,8 @@ const Home = () => {
           <p>No products available</p>
         )}
       </div>
+
+      <Link to={"/cart"}>View cart</Link>
       <ToastContainer />
     </div>
   );
