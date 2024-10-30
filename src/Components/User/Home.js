@@ -10,8 +10,8 @@ const Home = () => {
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(true);
   const [products, setProducts] = useState([]);
-  const [selectedVariations, setSelectedVariations] = useState({}); 
-  const [showVariations, setShowVariations] = useState({}); 
+  const [selectedVariations, setSelectedVariations] = useState({});
+  const [showVariations, setShowVariations] = useState({});
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -43,12 +43,18 @@ const Home = () => {
   };
 
   const dispatch = useDispatch();
-
   const handleAddToCart = (product) => {
-    const selectedVariation = selectedVariations[product._id] || product.variations[0]
-    dispatch(addToCart(product, selectedVariation));
+    const selectedVariation =
+      product.variations && product.variations.length > 0
+        ? selectedVariations[product._id] || product.variations[0]
+        : null;
+
+    dispatch(
+      addToCart(product, selectedVariation ? selectedVariation._id : null, selectedVariation)
+    );
     toast.success(`${product.name} added to cart`);
   };
+
   return (
     <div className="mx-auto container">
       <div className="grid grid-cols-2 md:grid-cols-3 gap-3 ">
@@ -56,40 +62,41 @@ const Home = () => {
           products.map((product) => {
             const hasVariations =
               product.variations && product.variations.length > 0;
-            const selectedVariation =
-              selectedVariations[product._id] || product.variations?.[0];
+            const selectedVariation = hasVariations
+              ? selectedVariations[product._id] || product.variations[0]
+              : null;
 
             return (
               <div key={product._id} className="p-4 border">
                 {/* Display product or selected variation image */}
-                {hasVariations
-                  ? selectedVariation.image && (
-                      <img
-                        src={selectedVariation.image}
-                        alt={product.name}
-                        style={{ width: "100px", height: "auto" }}
-                      />
-                    )
-                  : product.image && (
-                      <img
-                        src={product.image}
-                        alt={product.name}
-                        className="object-contain"
-                        style={{ width: "100px", height: "auto" }}
-                      />
-                    )}
+                {hasVariations && selectedVariation?.image ? (
+                  <img
+                    src={selectedVariation.image}
+                    alt={product.name}
+                    style={{ width: "100px", height: "auto" }}
+                  />
+                ) : (
+                  product.image && (
+                    <img
+                      src={product.image}
+                      alt={product.name}
+                      className="object-contain"
+                      style={{ width: "100px", height: "auto" }}
+                    />
+                  )
+                )}
 
                 <p className="font-bold text-lg">{product.name}</p>
 
                 {/* Display price and stock based on variation or product */}
                 <p>
-                  Price: ksh
-                  {hasVariations
+                  Price: Ksh
+                  {hasVariations && selectedVariation
                     ? selectedVariation.price
                     : product.generalPrice}
                 </p>
                 <p className="font-semibold">
-                  {hasVariations
+                  {hasVariations && selectedVariation
                     ? selectedVariation.stock > 0
                       ? "In stock"
                       : "Out of stock"
@@ -117,11 +124,11 @@ const Home = () => {
 
                 {hasVariations && showVariations[product._id] && (
                   <div className="mt-2">
-                    {product.variations.map((variation) => (
+                    {(product.variations || []).map((variation) => (
                       <button
                         key={variation._id}
                         className={`border px-2 py-1 m-1 ${
-                          selectedVariation._id === variation._id
+                          selectedVariation?._id === variation._id
                             ? "bg-teal-500 text-white"
                             : "bg-gray-200"
                         }`}

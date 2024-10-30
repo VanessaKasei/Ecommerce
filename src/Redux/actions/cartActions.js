@@ -1,19 +1,22 @@
-export const addToCart = (product) => ({
-  type: "ADD_TO_CART",
-  payload: product,
+export const addToCart = (product, selectedVariationId, selectedVariation) => {
+  return {
+    type: 'ADD_TO_CART',
+    payload: { product, selectedVariationId, selectedVariation },
+  };
+};
+
+
+export const increaseQuantity = (productId, variationId) => ({
+  type: 'INCREASE_QUANTITY',
+  payload: { productId, variationId },
 });
 
-export const increaseQuantity = (productId, quantity) => ({
-  type: "INCREASE_QUNTITY",
-  payload: { productId, quantity },
+export const decreaseQuantity = (productId, variationId) => ({
+  type: 'DECREASE_QUANTITY',
+  payload: { productId, variationId },
 });
 
-export const decreaseQuantity = (productId, quantity) => ({
-  type: "DECREASE_QUANTITY",
-  payload: { productId, quantity },
+export const removeFromCart = (productId, variationId) => ({
+  type: 'REMOVE_FROM_CART',
+  payload: { productId, variationId },
 });
-
-export const removeFromCart = (productId) =>({
-    type: 'REMOVE_FROM_CART',
-    payload: {productId}
-})
