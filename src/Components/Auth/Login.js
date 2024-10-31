@@ -5,7 +5,30 @@ import { useNavigate } from "react-router-dom";
 const Login = () => {
   const [password, setPassword] = useState("");
   const [email, setEmail] = useState("");
+  const [cartItems, setCartItems] = useState([]); // State to hold cart items
   const navigate = useNavigate();
+
+  const fetchUserCart = async (userId) => {
+    try {
+      const response = await fetch(`http://localhost:5000/api/cart/${userId}`, {
+        method: "GET",
+        headers: {
+          "Authorization": `Bearer ${localStorage.getItem("token")}`,
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to fetch cart data");
+      }
+
+      const cartData = await response.json();
+      setCartItems(cartData.cartItems); // Store the cart items in state
+    } catch (error) {
+      console.error("Error fetching cart:", error);
+      alert("An error occurred while fetching the cart data.");
+    }
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -18,22 +41,23 @@ const Login = () => {
         body: JSON.stringify({ email, password }),
       });
 
-      console.log('Server Response:', response);
-
-
       if (!response.ok) {
         const errorData = await response.json();
         alert(errorData.message);
         return;
       }
 
-      const data = await response.json(); 
-
+      const data = await response.json();
       localStorage.setItem("token", data.token);
 
       const decodedToken = jwtDecode(data.token);
+      const userId = decodedToken.userId; // Decode userId from token
       const role = decodedToken.role;
 
+      // Fetch the user's cart after successful login
+      await fetchUserCart(userId);
+
+      // Redirect based on user role
       if (role === "admin") {
         navigate("/modify");
       } else {
@@ -41,7 +65,7 @@ const Login = () => {
       }
     } catch (error) {
       console.error("Login error:", error);
-      alert("An error occured while logging in.");
+      alert("An error occurred while logging in.");
     }
   };
 

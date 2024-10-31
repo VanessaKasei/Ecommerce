@@ -1,102 +1,81 @@
 const initialState = {
-  cartItems: [],
+  cartItems: JSON.parse(localStorage.getItem("cartItems")) || [],
 };
 
+
 const cartReducer = (state = initialState, action) => {
+  let updatedCartItems;
+
   switch (action.type) {
-    case 'ADD_TO_CART':
+    case 'ADD_TO_CART': {
       const { product, selectedVariationId } = action.payload;
-
-      // Ensure product and variations array are defined
-      if (!product) return state;
-      const variations = product.variations || [];
-
-      // Check if the product has variations and select the appropriate variation
-      const variation = variations.length > 0
-        ? selectedVariationId
-          ? variations.find((varItem) => varItem._id === selectedVariationId)
-          : variations[0]
-        : null;
-
+      const variation = product.variations?.find(variationItem => variationItem._id === selectedVariationId) || null;
       const price = variation ? variation.price : product.generalPrice;
       const image = variation ? variation.image : product.image;
 
-      // Check for an existing item in the cart
       const existingItem = state.cartItems.find(
-        (cartItem) =>
-          cartItem._id === product._id &&
-          cartItem.variationId === (variation ? variation._id : null)
+        item => item._id === product._id && item.variationId === selectedVariationId
       );
 
       if (existingItem) {
-        return {
-          ...state,
-          cartItems: state.cartItems.map((cartItem) =>
-            cartItem._id === product._id &&
-            cartItem.variationId === (variation ? variation._id : null)
-              ? { ...cartItem, quantity: cartItem.quantity + 1 }
-              : cartItem
-          ),
-        };
+        updatedCartItems = state.cartItems.map(item =>
+          item._id === product._id && item.variationId === selectedVariationId
+            ? { ...item, quantity: item.quantity + 1 }
+            : item
+        );
       } else {
-        return {
-          ...state,
-          cartItems: [
-            ...state.cartItems,
-            {
-              _id: product._id,
-              name: product.name,
-              price,
-              image,
-              variationId: variation ? variation._id : null,
-              variationDetails: variation || null,
-              quantity: 1,
-            },
-          ],
-        };
+        updatedCartItems = [
+          ...state.cartItems,
+          {
+            _id: product._id,
+            name: product.name,
+            price,
+            image,
+            variationId: selectedVariationId,
+            quantity: 1,
+          },
+        ];
       }
+      break;
+    }
 
+    case 'INCREASE_QUANTITY': {
+      updatedCartItems = state.cartItems.map(item =>
+        item._id === action.payload.productId && item.variationId === action.payload.selectedVariationId
+          ? { ...item, quantity: item.quantity + 1 }
+          : item
+      );
+      break;
+    }
 
-      case 'INCREASE_QUANTITY': {
-        const { productId, variationId } = action.payload;
-        return {
-          ...state,
-          items: state.items.map((item) =>
-            item.productId === productId && item.variationId === variationId
-              ? { ...item, quantity: item.quantity + 1 }
-              : item
-          ),
-        };
-      }
-  
-      case 'DECREASE_QUANTITY': {
-        const { productId, variationId } = action.payload;
-        return {
-          ...state,
-          items: state.items.map((item) =>
-            item.productId === productId && item.variationId === variationId
-              ? {
-                  ...item,
-                  quantity: item.quantity > 1 ? item.quantity - 1 : 1, // Prevent quantity from going below 1
-                }
-              : item
-          ),
-        };
-      }
-  
-      case 'REMOVE_FROM_CART': {
-        const { productId, variationId } = action.payload;
-        return {
-          ...state,
-          items: state.items.filter(
-            (item) => !(item.productId === productId && item.variationId === variationId)
-          ),
-        };
-      }
+    case 'DECREASE_QUANTITY': {
+      updatedCartItems = state.cartItems.map(item =>
+        item._id === action.payload.productId && item.variationId === action.payload.selectedVariationId
+          ? { ...item, quantity: Math.max(item.quantity - 1, 1) }
+          : item
+      );
+      break;
+    }
+
+    case 'REMOVE_FROM_CART': {
+      updatedCartItems = state.cartItems.filter(
+        item => !(item._id === action.payload.productId && item.variationId === action.payload.selectedVariationId)
+      );
+      break;
+    }
 
     default:
       return state;
   }
+
+  // Update localStorage with the latest cart state after each action
+  localStorage.setItem("cartItems", JSON.stringify(updatedCartItems));
+
+  // Return the new state
+  return {
+    ...state,
+    cartItems: updatedCartItems,
+  };
 };
 
 export default cartReducer;

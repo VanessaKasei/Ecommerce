@@ -56,7 +56,7 @@ const Home = () => {
   };
 
   return (
-    <div className="mx-auto container">
+    <div className="mx-auto container mt-6">
       <div className="grid grid-cols-2 md:grid-cols-3 gap-3 ">
         {products && products.length > 0 ? (
           products.map((product) => {
