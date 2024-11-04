@@ -68,7 +68,6 @@ const Home = () => {
 
             return (
               <div key={product._id} className="p-4 border">
-                {/* Display product or selected variation image */}
                 {hasVariations && selectedVariation?.image ? (
                   <img
                     src={selectedVariation.image}
@@ -88,7 +87,6 @@ const Home = () => {
 
                 <p className="font-bold text-lg">{product.name}</p>
 
-                {/* Display price and stock based on variation or product */}
                 <p>
                   Price: Ksh
                   {hasVariations && selectedVariation
@@ -107,7 +105,6 @@ const Home = () => {
 
                 <p>{product.description}</p>
 
-                {/* Toggle variations button if the product has variations */}
                 {hasVariations && (
                   <button
                     className="bg-blue-500 text-white px-2 py-1 mt-2 flex items-center"

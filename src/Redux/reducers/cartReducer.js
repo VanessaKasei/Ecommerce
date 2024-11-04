@@ -8,7 +8,7 @@ const cartReducer = (state = initialState, action) => {
 
   switch (action.type) {
     case 'ADD_TO_CART': {
-      const { product, selectedVariationId } = action.payload;
+      const { product, selectedVariationId,selectedVariation  } = action.payload;
       const variation = product.variations?.find(variationItem => variationItem._id === selectedVariationId) || null;
       const price = variation ? variation.price : product.generalPrice;
       const image = variation ? variation.image : product.image;
@@ -33,6 +33,7 @@ const cartReducer = (state = initialState, action) => {
             image,
             variationId: selectedVariationId,
             quantity: 1,
+            variationDetails: selectedVariation // Store full variation details
           },
         ];
       }

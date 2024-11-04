@@ -1,5 +1,6 @@
 import { jwtDecode } from "jwt-decode";
 import React, { useState } from "react";
+import { useDispatch } from 'react-redux';
 import { useNavigate } from "react-router-dom";
 
 const Login = () => {
@@ -7,7 +8,9 @@ const Login = () => {
   const [email, setEmail] = useState("");
   const [cartItems, setCartItems] = useState([]); // State to hold cart items
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
+  
   const fetchUserCart = async (userId) => {
     try {
       const response = await fetch(`http://localhost:5000/api/cart/${userId}`, {
@@ -40,34 +43,39 @@ const Login = () => {
         },
         body: JSON.stringify({ email, password }),
       });
-
+  
       if (!response.ok) {
         const errorData = await response.json();
         alert(errorData.message);
         return;
       }
-
+  
       const data = await response.json();
       localStorage.setItem("token", data.token);
-
+  
       const decodedToken = jwtDecode(data.token);
-      const userId = decodedToken.userId; // Decode userId from token
-      const role = decodedToken.role;
-
+      console.log(decodedToken); // Log the decoded token to check its structure
+  
+      const { userId, role } = decodedToken;
+  
+      // Dispatch user ID to Redux store
+      dispatch({ type: 'SET_USER_ID', payload: userId });
+  
       // Fetch the user's cart after successful login
       await fetchUserCart(userId);
-
+  
       // Redirect based on user role
       if (role === "admin") {
         navigate("/modify");
       } else {
-        navigate("/home");
+        navigate("/");
       }
     } catch (error) {
       console.error("Login error:", error);
       alert("An error occurred while logging in.");
     }
   };
+  
 
   return (
     <div>

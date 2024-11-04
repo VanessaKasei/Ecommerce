@@ -1,7 +1,11 @@
 export const addToCart = (product, selectedVariationId, selectedVariation) => {
   return {
     type: 'ADD_TO_CART',
-    payload: { product, selectedVariationId, selectedVariation },
+    payload: {
+      ...product,
+      variationId: selectedVariationId,
+      variationDetails: selectedVariation, // This line is crucial
+    },
   };
 };
 

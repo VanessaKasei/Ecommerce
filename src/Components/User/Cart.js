@@ -1,10 +1,15 @@
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 import { decreaseQuantity, increaseQuantity, removeFromCart } from '../../Redux/actions/cartActions';
 
 const Cart = () => {
+  const userId = useSelector((state) => state.user?.id); // Fetch the userId directly
+  console.log("User ID:", userId); // Check if userId is properly set
   const cartItems = useSelector((state) => state.cart.cartItems);
+
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const handleIncreaseQuantity = (productId, selectedVariationId) => {
     dispatch(increaseQuantity(productId, selectedVariationId));
@@ -16,6 +21,36 @@ const Cart = () => {
 
   const handleRemoveItem = (productId, selectedVariationId) => {
     dispatch(removeFromCart(productId, selectedVariationId));
+  };
+
+  const handleCheckout = async () => {
+    const checkoutData = {
+      userId: userId,
+      cartItems: cartItems,
+    };
+
+    try {
+      const response = await fetch('/api/checkout', { 
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(checkoutData),
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        console.log('Checkout successful:', data);
+        navigate('/orderDetails'); // Redirect to order confirmation page
+      } else {
+        // Handle errors from the server
+        const errorData = await response.json();
+        console.error('Checkout failed:', errorData);
+      }
+    } catch (error) {
+      // Handle network errors
+      console.error('Error during checkout:', error);
+    }
   };
 
   return (
@@ -36,7 +71,7 @@ const Cart = () => {
           </thead>
           <tbody>
             {cartItems.map((product) => (
-              <tr key={product._id + (product.variationId || '')} >
+              <tr key={product._id + (product.variationId || '')}>
                 <td className="py-2 px-4 border-b border-gray-200">
                   <img
                     src={product.image}
@@ -87,7 +122,12 @@ const Cart = () => {
             ))}
           </tbody>
         </table>
-        <button>Proceed to checkout</button>
+        <button
+          onClick={handleCheckout} // Attach the checkout handler
+          className="bg-green-500 text-white p-2 mt-4 rounded hover:bg-green-600"
+        >
+          Proceed to checkout
+        </button>
       </div>
     </div>
   );
