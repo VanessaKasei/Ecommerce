@@ -1,5 +1,6 @@
+// userReducer.js
 const initialState = {
-    id: null, // or undefined
+    userId: null,
     role: null,
   };
   
@@ -8,11 +9,13 @@ const initialState = {
       case 'SET_USER_ID':
         return {
           ...state,
-          id: action.payload.id, // Ensure you are saving the ID correctly
+          userId: action.payload.userId, // Make sure this is correctly set
           role: action.payload.role,
         };
       default:
         return state;
     }
   };
+  
+  export default userReducer;
   

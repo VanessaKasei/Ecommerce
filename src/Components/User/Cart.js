@@ -4,10 +4,10 @@ import { useNavigate } from 'react-router-dom';
 import { decreaseQuantity, increaseQuantity, removeFromCart } from '../../Redux/actions/cartActions';
 
 const Cart = () => {
-  const userId = useSelector((state) => state.user?.id); // Fetch the userId directly
-  console.log("User ID:", userId); // Check if userId is properly set
+  const userId = useSelector((state) => state.user.userId); 
+  console.log("user id is:", userId);
+  
   const cartItems = useSelector((state) => state.cart.cartItems);
-
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -23,14 +23,15 @@ const Cart = () => {
     dispatch(removeFromCart(productId, selectedVariationId));
   };
 
+  // Function to handle checkout and navigate to order details page
   const handleCheckout = async () => {
-    const checkoutData = {
+     const checkoutData = {
       userId: userId,
       cartItems: cartItems,
     };
 
     try {
-      const response = await fetch('/api/checkout', { 
+      const response = await fetch('http://localhost:5000/api/cart/checkout', { 
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -41,14 +42,14 @@ const Cart = () => {
       if (response.ok) {
         const data = await response.json();
         console.log('Checkout successful:', data);
-        navigate('/orderDetails'); // Redirect to order confirmation page
+
+        // Navigate to order details page on success
+        navigate('/orderDetails'); 
       } else {
-        // Handle errors from the server
         const errorData = await response.json();
         console.error('Checkout failed:', errorData);
       }
     } catch (error) {
-      // Handle network errors
       console.error('Error during checkout:', error);
     }
   };
@@ -62,7 +63,6 @@ const Cart = () => {
             <tr>
               <th className="py-3 px-4 border-b border-gray-200">Image</th>
               <th className="py-3 px-4 border-b border-gray-200">Product</th>
-              <th className="py-3 px-4 border-b border-gray-200">Variation</th>
               <th className="py-3 px-4 border-b border-gray-200">Price</th>
               <th className="py-3 px-4 border-b border-gray-200">Quantity</th>
               <th className="py-3 px-4 border-b border-gray-200">Total</th>
@@ -80,15 +80,6 @@ const Cart = () => {
                   />
                 </td>
                 <td className="py-2 px-4 border-b border-gray-200">{product.name}</td>
-                <td className="py-2 px-4 border-b border-gray-200">
-                  {product.variationDetails ? (
-                    <div>
-                      {product.variationDetails.size && <div>Size: {product.variationDetails.size}</div>}
-                      {product.variationDetails.color && <div>Color: {product.variationDetails.color}</div>}
-                      {product.variationDetails.material && <div>Material: {product.variationDetails.material}</div>}
-                    </div>
-                  ) : 'None'}
-                </td>
                 <td className="py-2 px-4 border-b border-gray-200">ksh {product.price || product.generalPrice}</td>
                 <td className="py-2 px-4 border-b border-gray-200">
                   <div className="flex items-center">
@@ -123,7 +114,7 @@ const Cart = () => {
           </tbody>
         </table>
         <button
-          onClick={handleCheckout} // Attach the checkout handler
+          onClick={handleCheckout}
           className="bg-green-500 text-white p-2 mt-4 rounded hover:bg-green-600"
         >
           Proceed to checkout
