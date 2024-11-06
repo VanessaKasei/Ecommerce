@@ -44,13 +44,20 @@ const Home = () => {
 
   const dispatch = useDispatch();
   const handleAddToCart = (product) => {
+    console.log("Product:", product); // Log the product to check its structure
     const selectedVariation =
       product.variations && product.variations.length > 0
         ? selectedVariations[product._id] || product.variations[0]
         : null;
 
+    console.log("Selected Variation:", selectedVariation);
+
     dispatch(
-      addToCart(product, selectedVariation ? selectedVariation._id : null, selectedVariation)
+      addToCart(
+        product,
+        selectedVariation ? selectedVariation._id : null,
+        selectedVariation
+      )
     );
     toast.success(`${product.name} added to cart`);
   };

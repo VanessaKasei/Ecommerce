@@ -1,12 +1,17 @@
-import React from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
-import { decreaseQuantity, increaseQuantity, removeFromCart } from '../../Redux/actions/cartActions';
+import React from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
+import {
+  decreaseQuantity,
+  increaseQuantity,
+  removeFromCart,
+} from "../../Redux/actions/cartActions";
 
 const Cart = () => {
-  const userId = useSelector((state) => state.user.userId); 
+  const userId = useSelector((state) => state.user.userId);
   console.log("user id is:", userId);
-  
+
   const cartItems = useSelector((state) => state.cart.cartItems);
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -23,34 +28,37 @@ const Cart = () => {
     dispatch(removeFromCart(productId, selectedVariationId));
   };
 
-  // Function to handle checkout and navigate to order details page
   const handleCheckout = async () => {
-     const checkoutData = {
+    const checkoutData = {
       userId: userId,
       cartItems: cartItems,
     };
 
     try {
-      const response = await fetch('http://localhost:5000/api/cart/checkout', { 
-        method: 'POST',
+      const response = await fetch("http://localhost:5000/api/cart/checkout", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify(checkoutData),
       });
 
+      if (!userId) {
+        navigate("/login")
+        toast.error("Login forst then checkout")
+      }
+
       if (response.ok) {
         const data = await response.json();
-        console.log('Checkout successful:', data);
+        console.log("Checkout successful:", data);
 
-        // Navigate to order details page on success
-        navigate('/orderDetails'); 
+        navigate("/orderDetails");
       } else {
         const errorData = await response.json();
-        console.error('Checkout failed:', errorData);
+        console.error("Checkout failed:", errorData);
       }
     } catch (error) {
-      console.error('Error during checkout:', error);
+      console.error("Error during checkout:", error);
     }
   };
 
@@ -64,6 +72,7 @@ const Cart = () => {
               <th className="py-3 px-4 border-b border-gray-200">Image</th>
               <th className="py-3 px-4 border-b border-gray-200">Product</th>
               <th className="py-3 px-4 border-b border-gray-200">Price</th>
+              <th className="py-3 px-4 border-b border-gray-200">Variations</th>
               <th className="py-3 px-4 border-b border-gray-200">Quantity</th>
               <th className="py-3 px-4 border-b border-gray-200">Total</th>
               <th className="py-3 px-4 border-b border-gray-200">Actions</th>
@@ -71,7 +80,7 @@ const Cart = () => {
           </thead>
           <tbody>
             {cartItems.map((product) => (
-              <tr key={product._id + (product.variationId || '')}>
+              <tr key={product._id + (product.variationId || "")}>
                 <td className="py-2 px-4 border-b border-gray-200">
                   <img
                     src={product.image}
@@ -79,19 +88,38 @@ const Cart = () => {
                     className="h-16 w-16 object-cover rounded"
                   />
                 </td>
-                <td className="py-2 px-4 border-b border-gray-200">{product.name}</td>
-                <td className="py-2 px-4 border-b border-gray-200">ksh {product.price || product.generalPrice}</td>
+                <td className="py-2 px-4 border-b border-gray-200">
+                  {product.name}
+                </td>
+                <td className="py-2 px-4 border-b border-gray-200">
+                  ksh {product.price || product.generalPrice}
+                </td>
+                <td className="py-2 px-4 border-b border-gray-200">
+                  {product.variationDetails ? (
+                    <div>
+                      <p>Size: {product.variationDetails.size}</p>
+                      <p>Color: {product.variationDetails.color}</p>
+                      <p>Material: {product.variationDetails.material}</p>
+                    </div>
+                  ) : (
+                    <p>None</p>
+                  )}
+                </td>
                 <td className="py-2 px-4 border-b border-gray-200">
                   <div className="flex items-center">
                     <button
-                      onClick={() => handleDecreaseQuantity(product._id, product.variationId)}
+                      onClick={() =>
+                        handleDecreaseQuantity(product._id, product.variationId)
+                      }
                       className="px-2 py-1 bg-gray-300 text-black rounded mr-2"
                     >
                       -
                     </button>
                     <span>{product.quantity}</span>
                     <button
-                      onClick={() => handleIncreaseQuantity(product._id, product.variationId)}
+                      onClick={() =>
+                        handleIncreaseQuantity(product._id, product.variationId)
+                      }
                       className="px-2 py-1 bg-gray-300 text-black rounded ml-2"
                     >
                       +
@@ -99,11 +127,16 @@ const Cart = () => {
                   </div>
                 </td>
                 <td className="py-2 px-4 border-b border-gray-200">
-                  ksh {((product.price || product.generalPrice) * product.quantity).toFixed(2)}
+                  ksh{" "}
+                  {(
+                    (product.price || product.generalPrice) * product.quantity
+                  ).toFixed(2)}
                 </td>
                 <td className="py-2 px-4 border-b border-gray-200">
                   <button
-                    onClick={() => handleRemoveItem(product._id, product.variationId)}
+                    onClick={() =>
+                      handleRemoveItem(product._id, product.variationId)
+                    }
                     className="px-3 py-1 bg-red-600 text-white rounded hover:bg-red-700"
                   >
                     Remove
