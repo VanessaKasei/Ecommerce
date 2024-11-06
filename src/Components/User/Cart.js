@@ -44,8 +44,8 @@ const Cart = () => {
       });
 
       if (!userId) {
-        navigate("/login")
-        toast.error("Login forst then checkout")
+        navigate("/login");
+        toast.error("Login forst then checkout");
       }
 
       if (response.ok) {
@@ -134,9 +134,14 @@ const Cart = () => {
                 </td>
                 <td className="py-2 px-4 border-b border-gray-200">
                   <button
-                    onClick={() =>
-                      handleRemoveItem(product._id, product.variationId)
-                    }
+                    onClick={() => {
+                      const isConfirmed = window.confirm(
+                        "Are you sure you want to remove this item from the cart?"
+                      );
+                      if (isConfirmed) {
+                        handleRemoveItem(product._id, product.variationId);
+                      }
+                    }}
                     className="px-3 py-1 bg-red-600 text-white rounded hover:bg-red-700"
                   >
                     Remove

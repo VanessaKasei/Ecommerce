@@ -8,7 +8,6 @@ import { addToCart } from "../../Redux/actions/cartActions";
 
 const Home = () => {
   const [error, setError] = useState(null);
-  const [loading, setLoading] = useState(true);
   const [products, setProducts] = useState([]);
   const [selectedVariations, setSelectedVariations] = useState({});
   const [showVariations, setShowVariations] = useState({});
@@ -19,10 +18,8 @@ const Home = () => {
         const response = await fetch("http://localhost:5000/api/product");
         const result = await response.json();
         setProducts(result);
-        setLoading(false);
       } catch (error) {
         setError(error);
-        setLoading(false);
       }
     };
     fetchProducts();
@@ -44,7 +41,7 @@ const Home = () => {
 
   const dispatch = useDispatch();
   const handleAddToCart = (product) => {
-    console.log("Product:", product); // Log the product to check its structure
+    console.log("Product:", product); 
     const selectedVariation =
       product.variations && product.variations.length > 0
         ? selectedVariations[product._id] || product.variations[0]
@@ -61,6 +58,9 @@ const Home = () => {
     );
     toast.success(`${product.name} added to cart`);
   };
+  if (error) {
+    <p>Error: {error}</p>;
+  }
 
   return (
     <div className="mx-auto container mt-6">
@@ -147,7 +147,7 @@ const Home = () => {
                 )}
                 <button
                   onClick={() => handleAddToCart(product)}
-                  className="bg-teal-700 text-white p-2 rounded-md mt-2"
+                  className="bg-teal-700 text-white p-2 rounded-md mt-2 self-end"
                 >
                   Add to cart
                 </button>

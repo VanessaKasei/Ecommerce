@@ -4,6 +4,7 @@ import Login from "./Components/Auth/Login";
 import Register from "./Components/Auth/Register";
 import Cart from "./Components/User/Cart";
 import Categories from "./Components/User/Categories";
+import ConfirmOrder from "./Components/User/ConfirmOrder";
 import Home from "./Components/User/Home";
 import OrderDetails from "./Components/User/OrderDetails";
 
@@ -19,7 +20,8 @@ function App() {
           <Route path="/categories" element= {<Categories />}></Route>
           <Route path="/cart" element={<Cart />}></Route>
           <Route path="/orderDetails" element={<OrderDetails />}></Route>
-        </Routes>
+          <Route path="/confirmOrder/:orderId" element={<ConfirmOrder />} />
+          </Routes>
       </div>
     </Router>
   );
