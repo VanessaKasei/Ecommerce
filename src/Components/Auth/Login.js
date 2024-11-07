@@ -66,7 +66,7 @@ const Login = (userId) => {
       }
 
       const cartData = await response.json();
-      setCartItems(cartData.cartItems); // Store the cart items in state
+      setCartItems(cartData.cartItems); 
     } catch (error) {
       console.error("Error fetching cart:", error);
       alert("An error occurred while fetching the cart data.");
@@ -79,16 +79,7 @@ const Login = (userId) => {
         <h2 className="text-center font-semibold">Login</h2>
       </div>
       <form onSubmit={handleSubmit}>
-        <div>
-          <label>Password:</label>
-          <input
-            type="password"
-            id="password"
-            value={password}
-            placeholder="Enter your password"
-            onChange={(e) => setPassword(e.target.value)}
-          />
-        </div>
+       
         <div>
           <label>Email:</label>
           <input
@@ -97,6 +88,16 @@ const Login = (userId) => {
             value={email}
             placeholder="Enter your email"
             onChange={(e) => setEmail(e.target.value)}
+          />
+        </div>
+        <div>
+          <label>Password:</label>
+          <input
+            type="password"
+            id="password"
+            value={password}
+            placeholder="Enter your password"
+            onChange={(e) => setPassword(e.target.value)}
           />
         </div>
         <div>

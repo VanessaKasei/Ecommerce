@@ -77,7 +77,7 @@ const OrderDetails = () => {
       const data = await response.json();
       console.log("Order placed successfully:", data);
       toast.success("Order placed successfylly!");
-      navigate(`/confirmOrder/${data.orderId}`);
+      navigate(`/confirmOrder/${userId}`);
     } catch (error) {
       console.error("Error placing order:", error);
       toast.error("Error placing order. Please try again later");
