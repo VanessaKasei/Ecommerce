@@ -35,10 +35,10 @@ const Login = (userId) => {
       const { userId, role } = decodedToken;
 
       if (userId) {
-        dispatch(setUserId(userId,role));
+        dispatch(setUserId(userId, role));
         console.log("User ID from token:", userId);
 
-      await fetchUserCart(userId)
+        await fetchUserCart(userId);
         if (role === "admin") {
           navigate("/modify");
         } else {
@@ -66,7 +66,7 @@ const Login = (userId) => {
       }
 
       const cartData = await response.json();
-      setCartItems(cartData.cartItems); 
+      setCartItems(cartData.cartItems);
     } catch (error) {
       console.error("Error fetching cart:", error);
       alert("An error occurred while fetching the cart data.");
@@ -74,38 +74,53 @@ const Login = (userId) => {
   };
 
   return (
-    <div>
+    <div className="mx-auto container">
+    <div className="w-3/4 flex flex-col justify-center">
       <div>
-        <h2 className="text-center font-semibold">Login</h2>
+        <h2 className="mt-10 text-center text-2xl/9 font-bold tracking-tight text-gray-900">
+          Login
+        </h2>
       </div>
       <form onSubmit={handleSubmit}>
-       
         <div>
-          <label>Email:</label>
+          <label
+            htmlFor="email"
+            className="block text-sm/6 font-medium text-gray-900"
+          >
+            Email:
+          </label>
           <input
             type="email"
             id="email"
             value={email}
             placeholder="Enter your email"
+            className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm/6"
             onChange={(e) => setEmail(e.target.value)}
           />
         </div>
         <div>
-          <label>Password:</label>
+          <label className="block text-sm/6 font-medium text-gray-900">
+            Password:
+          </label>
           <input
             type="password"
             id="password"
             value={password}
             placeholder="Enter your password"
+            className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm/6"
             onChange={(e) => setPassword(e.target.value)}
           />
         </div>
         <div>
-          <button type="submit" className="bg-blue-500 text-white p-2">
+          <button
+            type="submit"
+            className="flex w-full justify-center rounded-md bg-teal-600 px-3 py-1.5 mt-3 text-sm/6 font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+          >
             Login
           </button>
         </div>
       </form>
+    </div>
     </div>
   );
 };

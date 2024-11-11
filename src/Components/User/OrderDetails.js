@@ -55,7 +55,10 @@ const OrderDetails = () => {
   const handlePlaceOrder = async () => {
     const orderData = {
       userId,
-      cartItems,
+      cartItems: cartItems.map((item) => ({
+        ...item,
+        variationDetails: item.variationDetails || null,
+      })),
       shippingInfo,
       paymentMethod,
       paymentStatus,
@@ -87,77 +90,76 @@ const OrderDetails = () => {
   return (
     <div className="p-4 mx-auto container">
       <h2 className="text-2xl font-semibold mb-4">Order Details</h2>
-      <div className="overflow-x-auto">
-        <table className="min-w-full bg-white shadow-md rounded border border-gray-200">
-          <thead className="bg-gray-300">
-            <tr>
-              <th className="py-3 px-4 border-b border-gray-200">Image</th>
-              <th className="py-3 px-4 border-b border-gray-200">Product</th>
-              <th className="py-3 px-4 border-b border-gray-200">Price</th>
-              <th className="py-3 px-4 border-b border-gray-200">Variations</th>
-              <th className="py-3 px-4 border-b border-gray-200">Quantity</th>
-              <th className="py-3 px-4 border-b border-gray-200">Total</th>
-            </tr>
-          </thead>
-          <tbody>
-            {cartItems.map((product) => (
-              <tr key={product._id + (product.variationId || "")}>
-                <td className="py-2 px-4 border-b border-gray-200">
-                  <img
-                    src={product.image}
-                    alt={product.name}
-                    className="h-16 w-16 object-cover rounded"
-                  />
+      <div className="space-y-4">
+        {cartItems.map((product) => (
+          <div key={product._id + (product.variationId || "")} className="bg-white shadow-md rounded border border-gray-200 p-4">
+            <table className="min-w-full bg-white">
+              <thead className="bg-gray-300">
+                <tr>
+                  <th className="py-3 px-4 border-b border-gray-200 border-r text-start">Image</th>
+                  <th className="py-3 px-4 border-b border-gray-200 border-r text-start">Product</th>
+                  <th className="py-3 px-4 border-b border-gray-200 border-r text-start">Price</th>
+                  <th className="py-3 px-4 border-b border-gray-200 border-r text-start">Variations</th>
+                  <th className="py-3 px-4 border-b border-gray-200 border-r text-start">Quantity</th>
+                  <th className="py-3 px-4 border-b border-gray-200">Total</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td className="py-2 px-4 border-b border-gray-200 border-r">
+                    <img src={product.image} alt={product.name} className="h-16 w-16 object-cover rounded" />
+                  </td>
+                  <td className="py-2 px-4 border-b border-gray-200 border-r">
+                    <span className="whitespace-nowrap">{product.name}</span>
+                  </td>
+                  <td className="py-2 px-4 border-b border-gray-200 border-r">
+                    ksh {product.price || product.generalPrice}
+                  </td>
+                  <td className="py-2 px-4 border-b border-gray-200 border-r">
+                    {product.variationDetails ? (
+                      <div>
+                        <p>Size: {product.variationDetails.size}</p>
+                        <p>Color: {product.variationDetails.color}</p>
+                        <p>Material: {product.variationDetails.material}</p>
+                      </div>
+                    ) : (
+                      <p>None</p>
+                    )}
+                  </td>
+                  <td className="py-2 px-4 border-b border-gray-200 border-r">{product.quantity}</td>
+                  <td className="py-2 px-4 border-b border-gray-200">
+                    ksh {(product.price || product.generalPrice) * product.quantity}.toFixed(2)
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        ))}
+      </div>
+  
+      {/* Order Summary */}
+      <div className="mt-8">
+        <h3 className="text-xl font-semibold mb-4">Order Summary</h3>
+        <div className="p-4 bg-white shadow-md rounded border border-gray-200">
+          <table className="min-w-full">
+            <tfoot>
+              <tr>
+                <td colSpan="5" className="py-2 px-4 text-right font-semibold border-r">
+                  Total Amount:
                 </td>
-                <td className="py-2 px-4 border-b border-gray-200">
-                  {product.name}
-                </td>
-                <td className="py-2 px-4 border-b border-gray-200">
-                  ksh {product.price || product.generalPrice}
-                </td>
-                <td className="py-2 px-4 border-b border-gray-200">
-                  {product.variationDetails ? (
-                    <div>
-                      <p>Size: {product.variationDetails.size}</p>
-                      <p>Color: {product.variationDetails.color}</p>
-                      <p>Material: {product.variationDetails.material}</p>
-                    </div>
-                  ) : (
-                    <p>None</p>
-                  )}
-                </td>
-                <td className="py-2 px-4 border-b border-gray-200">
-                  {product.quantity}
-                </td>
-                <td className="py-2 px-4 border-b border-gray-200">
+                <td className="py-2 px-4 font-semibold">
                   ksh{" "}
-                  {(
-                    (product.price || product.generalPrice) * product.quantity
-                  ).toFixed(2)}
+                  {cartItems
+                    .reduce((total, product) => total + (product.price || product.generalPrice) * product.quantity, 0)
+                    .toFixed(2)}
                 </td>
               </tr>
-            ))}
-          </tbody>
-          <tfoot>
-      <tr>
-        <td colSpan="5" className="py-2 px-4 text-right font-semibold">
-          Total Amount:
-        </td>
-        <td className="py-2 px-4 font-semibold">
-          ksh{" "}
-          {cartItems
-            .reduce((total, product) => {
-              return (
-                total + (product.price || product.generalPrice) * product.quantity
-              );
-            }, 0)
-            .toFixed(2)}
-        </td>
-      </tr>
-    </tfoot>
-        </table>
+            </tfoot>
+          </table>
+        </div>
       </div>
-
+  
+      {/* Shipping Information */}
       <div className="mt-8">
         <h3 className="text-xl font-semibold mb-4">Shipping Information</h3>
         <form>
@@ -196,7 +198,8 @@ const OrderDetails = () => {
               />
             </div>
           </div>
-
+  
+          {/* Payment Information */}
           <h3 className="text-xl font-semibold mb-4">Payment Information</h3>
           <div className="mb-4">
             <label className="block text-sm font-medium">Payment Method</label>
@@ -210,9 +213,7 @@ const OrderDetails = () => {
           </div>
           {paymentMethod === "mpesa" && (
             <div className="mb-4">
-              <label className="block text-sm font-medium">
-                Payment Status
-              </label>
+              <label className="block text-sm font-medium">Payment Status</label>
               <div className="flex space-x-4">
                 <label>
                   <input
@@ -228,8 +229,8 @@ const OrderDetails = () => {
                   <input
                     type="radio"
                     name="paymentStatus"
-                    value="payLater"
-                    checked={paymentStatus === "payLater"}
+                    value="payAfterDelivery"
+                    checked={paymentStatus === "payAfterDelivery"}
                     onChange={handlePaymentStatusChange}
                   />
                   Pay After Delivery
@@ -251,5 +252,5 @@ const OrderDetails = () => {
     </div>
   );
 };
-
-export default OrderDetails;
+  export default OrderDetails;
+  

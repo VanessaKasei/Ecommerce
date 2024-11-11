@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { FaCaretDown, FaCaretUp } from "react-icons/fa";
 import { useDispatch } from "react-redux";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { addToCart } from "../../Redux/actions/cartActions";
@@ -10,7 +9,8 @@ const Home = () => {
   const [error, setError] = useState(null);
   const [products, setProducts] = useState([]);
   const [selectedVariations, setSelectedVariations] = useState({});
-  const [showVariations, setShowVariations] = useState({});
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -25,13 +25,6 @@ const Home = () => {
     fetchProducts();
   }, []);
 
-  const handleToggleVariations = (productId) => {
-    setShowVariations((prevState) => ({
-      ...prevState,
-      [productId]: !prevState[productId],
-    }));
-  };
-
   const handleSelectVariation = (productId, variation) => {
     setSelectedVariations((prevState) => ({
       ...prevState,
@@ -39,15 +32,11 @@ const Home = () => {
     }));
   };
 
-  const dispatch = useDispatch();
   const handleAddToCart = (product) => {
-    console.log("Product:", product); 
     const selectedVariation =
       product.variations && product.variations.length > 0
         ? selectedVariations[product._id] || product.variations[0]
         : null;
-
-    console.log("Selected Variation:", selectedVariation);
 
     dispatch(
       addToCart(
@@ -58,13 +47,15 @@ const Home = () => {
     );
     toast.success(`${product.name} added to cart`);
   };
+
   if (error) {
-    <p>Error: {error}</p>;
+    return <p>Error: {error.message}</p>;
   }
 
   return (
     <div className="mx-auto container mt-6">
-      <div className="grid grid-cols-2 md:grid-cols-3 gap-3 ">
+      <h2 className="flex justify-center font-bold text-2xl mb-6">Products</h2>
+      <div className="grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 xl:gap-x-8">
         {products && products.length > 0 ? (
           products.map((product) => {
             const hasVariations =
@@ -74,25 +65,29 @@ const Home = () => {
               : null;
 
             return (
-              <div key={product._id} className="p-4 border">
-                {hasVariations && selectedVariation?.image ? (
-                  <img
-                    src={selectedVariation.image}
-                    alt={product.name}
-                    style={{ width: "100px", height: "auto" }}
-                  />
-                ) : (
-                  product.image && (
+              <div key={product._id} className=" flex flex-col justify-between h-full p-4 border ">
+                <Link to={`/product/${product._id}`}>
+                  {hasVariations && selectedVariation?.image ? (
                     <img
-                      src={product.image}
+                      src={selectedVariation.image}
                       alt={product.name}
-                      className="object-contain"
                       style={{ width: "100px", height: "auto" }}
                     />
-                  )
-                )}
+                  ) : (
+                    product.image && (
+                      <img
+                        src={product.image}
+                        alt={product.name}
+                        className="object-contain"
+                        style={{ width: "100px", height: "auto" }}
+                      />
+                    )
+                  )}
+                </Link>
 
-                <p className="font-bold text-lg">{product.name}</p>
+                <Link to={`/product/${product._id}`}>
+                  <p className="font-bold text-lg">{product.name}</p>
+                </Link>
 
                 <p>
                   Price: Ksh
@@ -112,39 +107,6 @@ const Home = () => {
 
                 <p>{product.description}</p>
 
-                {hasVariations && (
-                  <button
-                    className="bg-blue-500 text-white px-2 py-1 mt-2 flex items-center"
-                    onClick={() => handleToggleVariations(product._id)}
-                  >
-                    Available variations
-                    {showVariations[product._id] ? (
-                      <FaCaretUp className="ml-2" />
-                    ) : (
-                      <FaCaretDown className="ml-2" />
-                    )}
-                  </button>
-                )}
-
-                {hasVariations && showVariations[product._id] && (
-                  <div className="mt-2">
-                    {(product.variations || []).map((variation) => (
-                      <button
-                        key={variation._id}
-                        className={`border px-2 py-1 m-1 ${
-                          selectedVariation?._id === variation._id
-                            ? "bg-teal-500 text-white"
-                            : "bg-gray-200"
-                        }`}
-                        onClick={() =>
-                          handleSelectVariation(product._id, variation)
-                        }
-                      >
-                        {variation.size}, {variation.color}
-                      </button>
-                    ))}
-                  </div>
-                )}
                 <button
                   onClick={() => handleAddToCart(product)}
                   className="bg-teal-700 text-white p-2 rounded-md mt-2 self-end"
@@ -158,8 +120,6 @@ const Home = () => {
           <p>No products available</p>
         )}
       </div>
-
-      <Link to={"/cart"}>View cart</Link>
       <ToastContainer />
     </div>
   );

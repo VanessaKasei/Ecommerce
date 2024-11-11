@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
@@ -28,10 +28,33 @@ const Cart = () => {
     dispatch(removeFromCart(productId, selectedVariationId));
   };
 
+  const [showModal, setShowModal] = useState(false);
+  const [itemToRemove, setItemToRemove] = useState(null);
+
+  const openModal = (product) => {
+    setItemToRemove(product);
+    setShowModal(true);
+  };
+
+  const closeModal = () => {
+    setShowModal(false);
+    setItemToRemove(null);
+  };
+
+  const confirmRemoveItem = () => {
+    if (itemToRemove) {
+      handleRemoveItem(itemToRemove._id, itemToRemove.variationId);
+      closeModal();
+    }
+  };
+
   const handleCheckout = async () => {
     const checkoutData = {
       userId: userId,
-      cartItems: cartItems,
+      cartItems: cartItems.map((item) => ({
+        ...item,
+        variationDetails: item.variationDetails || {}, // Ensure variationDetails are included
+      })),
     };
 
     try {
@@ -45,7 +68,7 @@ const Cart = () => {
 
       if (!userId) {
         navigate("/login");
-        toast.error("Login forst then checkout");
+        toast.error("Log in first then checkout");
       }
 
       if (response.ok) {
@@ -69,32 +92,41 @@ const Cart = () => {
         <table className="min-w-full bg-white shadow-md rounded border border-gray-200">
           <thead className="bg-gray-300">
             <tr>
-              <th className="py-3 px-4 border-b border-gray-200">Image</th>
-              <th className="py-3 px-4 border-b border-gray-200">Product</th>
-              <th className="py-3 px-4 border-b border-gray-200">Price</th>
-              <th className="py-3 px-4 border-b border-gray-200">Variations</th>
-              <th className="py-3 px-4 border-b border-gray-200">Quantity</th>
-              <th className="py-3 px-4 border-b border-gray-200">Total</th>
-              <th className="py-3 px-4 border-b border-gray-200">Actions</th>
+              <th className="py-3 px-4 border-b border-gray-200 border-r text-start">
+                Image
+              </th>
+              <th className="py-3 px-4 border-b border-gray-200 border-r text-start">
+                Product
+              </th>
+              <th className="py-3 px-4 border-b border-gray-200 border-r text-start">
+                Variations
+              </th>
+              <th className="py-3 px-4 border-b border-gray-200 border-r text-start">
+                Price
+              </th>
+              <th className="py-3 px-4 border-b border-gray-200 border-r text-start">
+                Quantity
+              </th>
+              <th className="py-3 px-4 border-b border-gray-200 border-r text-start">
+                Total
+              </th>
+              <th className="py-3 px-4 border-b border-gray-200 text-start">Actions</th>
             </tr>
           </thead>
           <tbody>
             {cartItems.map((product) => (
               <tr key={product._id + (product.variationId || "")}>
-                <td className="py-2 px-4 border-b border-gray-200">
+                <td className="py-2 px-4 border-b border-gray-200 border-r">
                   <img
                     src={product.image}
                     alt={product.name}
                     className="h-16 w-16 object-cover rounded"
                   />
                 </td>
-                <td className="py-2 px-4 border-b border-gray-200">
+                <td className="py-2 px-4 border-b border-gray-200 border-r whitespace-nowrap">
                   {product.name}
                 </td>
-                <td className="py-2 px-4 border-b border-gray-200">
-                  ksh {product.price || product.generalPrice}
-                </td>
-                <td className="py-2 px-4 border-b border-gray-200">
+                <td className="py-2 px-4 border-b border-gray-200 border-r">
                   {product.variationDetails ? (
                     <div>
                       <p>Size: {product.variationDetails.size}</p>
@@ -105,7 +137,11 @@ const Cart = () => {
                     <p>None</p>
                   )}
                 </td>
-                <td className="py-2 px-4 border-b border-gray-200">
+                <td className="py-2 px-4 border-b border-gray-200 border-r">
+                  <span className="whitespace-nowrap">ksh {product.price || product.generalPrice}</span>
+                </td>
+               
+                <td className="py-2 px-4 border-b border-gray-200 border-r">
                   <div className="flex items-center">
                     <button
                       onClick={() =>
@@ -126,22 +162,14 @@ const Cart = () => {
                     </button>
                   </div>
                 </td>
-                <td className="py-2 px-4 border-b border-gray-200">
-                  ksh{" "}
-                  {(
-                    (product.price || product.generalPrice) * product.quantity
-                  ).toFixed(2)}
+                <td className="py-2 px-4 border-b border-gray-200 border-r">
+                  <span className="whitespace-nowrap"> ksh{" "}
+                  {((product.price || product.generalPrice) * product.quantity).toFixed(2)}
+                  </span>
                 </td>
                 <td className="py-2 px-4 border-b border-gray-200">
                   <button
-                    onClick={() => {
-                      const isConfirmed = window.confirm(
-                        "Are you sure you want to remove this item from the cart?"
-                      );
-                      if (isConfirmed) {
-                        handleRemoveItem(product._id, product.variationId);
-                      }
-                    }}
+                    onClick={() => openModal(product)}
                     className="px-3 py-1 bg-red-600 text-white rounded hover:bg-red-700"
                   >
                     Remove
@@ -158,8 +186,30 @@ const Cart = () => {
           Proceed to checkout
         </button>
       </div>
+
+      {showModal && (
+        <div className="fixed inset-0 flex items-center justify-center z-50 bg-gray-800 bg-opacity-75">
+          <div className="bg-white p-6 rounded shadow-lg max-w-sm w-full">
+            <h3 className="text-lg font-semibold mb-4">Confirm Removal</h3>
+            <p>Are you sure you want to remove this item from the cart?</p>
+            <div className="mt-6 flex justify-end">
+              <button
+                onClick={closeModal}
+                className="bg-gray-300 text-black px-4 py-2 rounded mr-2 hover:bg-gray-400"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={confirmRemoveItem}
+                className="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700"
+              >
+                Confirm
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
-
 export default Cart;
