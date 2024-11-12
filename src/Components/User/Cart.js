@@ -53,7 +53,7 @@ const Cart = () => {
       userId: userId,
       cartItems: cartItems.map((item) => ({
         ...item,
-        variationDetails: item.variationDetails || {}, // Ensure variationDetails are included
+        variationDetails: item.variationDetails || {}, 
       })),
     };
 

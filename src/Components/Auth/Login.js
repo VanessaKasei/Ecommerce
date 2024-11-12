@@ -2,8 +2,9 @@ import { jwtDecode } from "jwt-decode";
 import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import { toast, ToastContainer } from "react-toastify";
 import { setUserId } from "../../Redux/actions/userActions";
-const Login = (userId) => {
+const Login = () => {
   const [password, setPassword] = useState("");
   const [email, setEmail] = useState("");
   const [cartItems, setCartItems] = useState([]); // State to hold cart items
@@ -29,6 +30,7 @@ const Login = (userId) => {
 
       const data = await response.json();
       localStorage.setItem("token", data.token);
+      localStorage.setItem("role", data.role);  
       const decodedToken = jwtDecode(data.token);
       console.log("decoded token:", decodedToken);
 
@@ -40,13 +42,13 @@ const Login = (userId) => {
 
         await fetchUserCart(userId);
         if (role === "admin") {
-          navigate("/modify");
+          navigate("/admin");
         } else {
           navigate("/");
         }
       }
     } catch (error) {
-      console.error("Login error:", error);
+      toast.error("Login error:", error);
       alert("An error occurred while logging in.");
     }
   };
@@ -74,53 +76,51 @@ const Login = (userId) => {
   };
 
   return (
-    <div className="mx-auto container">
-    <div className="w-3/4 flex flex-col justify-center">
-      <div>
-        <h2 className="mt-10 text-center text-2xl/9 font-bold tracking-tight text-gray-900">
-          Login
-        </h2>
-      </div>
-      <form onSubmit={handleSubmit}>
+    <div className="min-h-screen flex items-start justify-center  bg-gray-100 ">
+      <div className="w-1/2 bg-white p-8 rounded-lg shadow-lg mt-12">
         <div>
-          <label
-            htmlFor="email"
-            className="block text-sm/6 font-medium text-gray-900"
-          >
-            Email:
-          </label>
-          <input
-            type="email"
-            id="email"
-            value={email}
-            placeholder="Enter your email"
-            className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm/6"
-            onChange={(e) => setEmail(e.target.value)}
-          />
-        </div>
-        <div>
-          <label className="block text-sm/6 font-medium text-gray-900">
-            Password:
-          </label>
-          <input
-            type="password"
-            id="password"
-            value={password}
-            placeholder="Enter your password"
-            className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm/6"
-            onChange={(e) => setPassword(e.target.value)}
-          />
-        </div>
-        <div>
-          <button
-            type="submit"
-            className="flex w-full justify-center rounded-md bg-teal-600 px-3 py-1.5 mt-3 text-sm/6 font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-          >
+          <h2 className="text-center text-3xl font-bold text-gray-900 mb-6">
             Login
-          </button>
+          </h2>
         </div>
-      </form>
-    </div>
+        <form onSubmit={handleSubmit}>
+          <div className="mb-4">
+            <label htmlFor="email" className="block text-sm font-medium text-gray-900">
+              Email:
+            </label>
+            <input
+              type="email"
+              id="email"
+              value={email}
+              placeholder="Enter your email"
+              className="block w-full rounded-md border-0 py-2 px-4 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-indigo-600 sm:text-sm"
+              onChange={(e) => setEmail(e.target.value)}
+            />
+          </div>
+          <div className="mb-6">
+            <label htmlFor="password" className="block text-sm font-medium text-gray-900">
+              Password:
+            </label>
+            <input
+              type="password"
+              id="password"
+              value={password}
+              placeholder="Enter your password"
+              className="block w-full rounded-md border-0 py-2 px-4 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-indigo-600 sm:text-sm"
+              onChange={(e) => setPassword(e.target.value)}
+            />
+          </div>
+          <div>
+            <button
+              type="submit"
+              className="w-full bg-teal-600 text-white py-2 px-4 rounded-md text-sm font-semibold shadow-sm hover:bg-teal-700 focus:outline-none focus:ring-2 focus:ring-teal-600 focus:ring-opacity-50"
+            >
+              Login
+            </button>
+          </div>
+        </form>
+      </div>
+      <ToastContainer />
     </div>
   );
 };

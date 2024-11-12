@@ -1,4 +1,4 @@
-import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
+import { Route, BrowserRouter as Router, Routes, useLocation } from "react-router-dom";
 import AdminDashboard from "./Components/Admin/AdminDashboard";
 import Orders from "./Components/Admin/Orders";
 import Login from "./Components/Auth/Login";
@@ -10,24 +10,40 @@ import Home from "./Components/User/Home";
 import NavBar from "./Components/User/Navbar";
 import OrderDetails from "./Components/User/OrderDetails";
 import ProductDetails from "./Components/User/ProductDetails";
+import UserProfile from "./Components/User/UserProfile";
+
+// Create a separate component for managing NavBar visibility
+function Layout() {
+  const location = useLocation();
+  
+  const shouldShowNavBar = !['/login', '/register'].includes(location.pathname);
+  
+  return (
+    <>
+      {shouldShowNavBar && <NavBar />}
+      <div className="App">
+        <Routes>
+          <Route path="/register" element={<Register />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/" element={<Home />} />
+          <Route path="/admin" element={<AdminDashboard />} />
+          <Route path="/categories" element={<Categories />} />
+          <Route path="/cart" element={<Cart />} />
+          <Route path="/orderDetails" element={<OrderDetails />} />
+          <Route path="/confirmOrder/:userId" element={<ConfirmOrder />} />
+          <Route path="/orders" element={<Orders />} />
+          <Route path="/product/:id" element={<ProductDetails />} />
+          <Route path="/profile" element={<UserProfile />} />
+        </Routes>
+      </div>
+    </>
+  );
+}
+
 function App() {
   return (
     <Router>
-      <NavBar />
-      <div className="App">
-        <Routes>
-          <Route path="/register" element={<Register />}></Route>
-          <Route path="/login" element={<Login />}></Route>
-          <Route path="/" element={<Home />}></Route>
-          <Route path="/admin" element={<AdminDashboard />}></Route>
-          <Route path="/categories" element= {<Categories />}></Route>
-          <Route path="/cart" element={<Cart />}></Route>
-          <Route path="/orderDetails" element={<OrderDetails />}></Route>
-          <Route path="/confirmOrder/:userId" element={<ConfirmOrder />} />
-          <Route path="/orders" element= {<Orders />}></Route>
-          <Route path="/product/:id" element={<ProductDetails />} />
-          </Routes>
-      </div>
+      <Layout />
     </Router>
   );
 }
