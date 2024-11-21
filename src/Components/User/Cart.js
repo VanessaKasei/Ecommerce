@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { toast } from "react-toastify";
+import { toast, ToastContainer } from "react-toastify";
 import {
   decreaseQuantity,
   increaseQuantity,
@@ -49,6 +49,15 @@ const Cart = () => {
   };
 
   const handleCheckout = async () => {
+    if (!userId) {
+      console.log("Log in first then check out");
+      toast.error("Log in first then checkout");
+      setTimeout(() => {
+        navigate("/login");
+      }, 3000); 
+      return;
+    }
+  
     const checkoutData = {
       userId: userId,
       cartItems: cartItems.map((item) => ({
@@ -56,7 +65,7 @@ const Cart = () => {
         variationDetails: item.variationDetails || {}, 
       })),
     };
-
+  
     try {
       const response = await fetch("http://localhost:5000/api/cart/checkout", {
         method: "POST",
@@ -65,29 +74,27 @@ const Cart = () => {
         },
         body: JSON.stringify(checkoutData),
       });
-
-      if (!userId) {
-        navigate("/login");
-        toast.error("Log in first then checkout");
-      }
-
+  
       if (response.ok) {
         const data = await response.json();
         console.log("Checkout successful:", data);
-
+  
         navigate("/orderDetails");
       } else {
         const errorData = await response.json();
         console.error("Checkout failed:", errorData);
+        toast.error(errorData.message || "Checkout failed.");
       }
     } catch (error) {
       console.error("Error during checkout:", error);
+      toast.error("An error occurred. Please try again later.");
     }
   };
-
+  
   return (
     <div className="p-4 mx-auto container">
       <h2 className="text-2xl font-semibold mb-4">Your Cart</h2>
+      {cartItems.length > 0 ? ( 
       <div className="overflow-x-auto">
         <table className="min-w-full bg-white shadow-md rounded border border-gray-200">
           <thead className="bg-gray-300">
@@ -181,27 +188,32 @@ const Cart = () => {
         </table>
         <button
           onClick={handleCheckout}
-          className="bg-green-500 text-white p-2 mt-4 rounded hover:bg-green-600"
+          className="bg-green-500 text-white p-2 mt-4 rounded-lg hover:bg-green-600"
         >
           Proceed to checkout
         </button>
       </div>
+        ) : (
+          <div className="text-center mt-8">
+            <p className="text-xl">Your cart is empty, <span onClick={() => navigate("/")} className="text-blue-500 cursor-pointer">return to shop page</span>.</p>
+          </div>
+        )}
 
       {showModal && (
         <div className="fixed inset-0 flex items-center justify-center z-50 bg-gray-800 bg-opacity-75">
-          <div className="bg-white p-6 rounded shadow-lg max-w-sm w-full">
+          <div className="bg-white p-6 rounded-lg shadow-lg max-w-sm w-full">
             <h3 className="text-lg font-semibold mb-4">Confirm Removal</h3>
             <p>Are you sure you want to remove this item from the cart?</p>
             <div className="mt-6 flex justify-end">
               <button
                 onClick={closeModal}
-                className="bg-gray-300 text-black px-4 py-2 rounded mr-2 hover:bg-gray-400"
+                className="bg-gray-300 text-black px-4 py-2 rounded-lg mr-2 hover:bg-gray-400"
               >
                 Cancel
               </button>
               <button
                 onClick={confirmRemoveItem}
-                className="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700"
+                className="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700"
               >
                 Confirm
               </button>
@@ -209,7 +221,8 @@ const Cart = () => {
           </div>
         </div>
       )}
-    </div>
+  <ToastContainer />
+  </div>
   );
 };
 export default Cart;

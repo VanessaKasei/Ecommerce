@@ -7,7 +7,7 @@ import { setUserId } from "../../Redux/actions/userActions";
 const Login = () => {
   const [password, setPassword] = useState("");
   const [email, setEmail] = useState("");
-  const [cartItems, setCartItems] = useState([]); // State to hold cart items
+  const [cartItems, setCartItems] = useState([]); 
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
@@ -30,7 +30,7 @@ const Login = () => {
 
       const data = await response.json();
       localStorage.setItem("token", data.token);
-      localStorage.setItem("role", data.role);  
+      localStorage.setItem("role", data.role);
       const decodedToken = jwtDecode(data.token);
       console.log("decoded token:", decodedToken);
 
@@ -85,7 +85,10 @@ const Login = () => {
         </div>
         <form onSubmit={handleSubmit}>
           <div className="mb-4">
-            <label htmlFor="email" className="block text-sm font-medium text-gray-900">
+            <label
+              htmlFor="email"
+              className="block text-sm font-medium text-gray-900"
+            >
               Email:
             </label>
             <input
@@ -98,7 +101,10 @@ const Login = () => {
             />
           </div>
           <div className="mb-6">
-            <label htmlFor="password" className="block text-sm font-medium text-gray-900">
+            <label
+              htmlFor="password"
+              className="block text-sm font-medium text-gray-900"
+            >
               Password:
             </label>
             <input
@@ -113,7 +119,7 @@ const Login = () => {
           <div>
             <button
               type="submit"
-              className="w-full bg-teal-600 text-white py-2 px-4 rounded-md text-sm font-semibold shadow-sm hover:bg-teal-700 focus:outline-none focus:ring-2 focus:ring-teal-600 focus:ring-opacity-50"
+              className=" bg-teal-600 text-white py-2 px-4 rounded-md text-sm font-semibold shadow-sm hover:bg-teal-700 focus:outline-none focus:ring-2 focus:ring-teal-600 focus:ring-opacity-50"
             >
               Login
             </button>

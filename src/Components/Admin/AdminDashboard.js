@@ -131,7 +131,6 @@ const AdminDashboard = () => {
     <div className="container mx-auto p-4">
       <h1 className="text-2xl font-bold mb-4">Admin Dashboard</h1>
 
-      {/* Product Table */}
       <div className="overflow-x-auto mb-8">
         <table className="min-w-full bg-white border border-gray-300">
           <thead>
@@ -183,7 +182,6 @@ const AdminDashboard = () => {
       </div>
 
 
-      {/* Add / Edit Product Form */}
       <form
         onSubmit={isEditing ? handleEditProduct : handleAddProduct}
         className="bg-white p-4 border border-gray-300 rounded"
@@ -235,7 +233,6 @@ const AdminDashboard = () => {
           />
         </div>
 
-        {/* Variations */}
         <h3 className="text-lg font-bold mb-4">Variations(optional)</h3>
         {formData.variations.map((variation, index) => (
           <div key={index} className="mb-4 border p-4 rounded">

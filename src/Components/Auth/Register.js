@@ -32,7 +32,6 @@ const Register = () => {
       });
 
       const data = await response.json();
-      console.log('Server Response:', data);  
       if (response.ok) {
         setMessage("Registration successful");
         setError(false);
@@ -44,86 +43,104 @@ const Register = () => {
         setError(true);
       }
     } catch (error) {
-      console.error('Error submitting the form:', error); // Log the error
+      console.error("Error submitting the form:", error);
       setMessage("Error submitting the form");
     }
-    
   };
 
   return (
-    <div className="mx-auto container">
-      <div>
-        <h2 className="text-center font-semibold text-lg">Register</h2>
-        <div className="flex justify-start mt-12 border border-solid p-4">
-          <form onSubmit={handleSubmit}>
-            <div>
-              <label>Email:</label>
-              <input
-                type="email"
-                id="username"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-              />
+    <div className="min-h-screen flex items-start justify-center bg-gray-100">
+      <div className="w-1/2 bg-white p-8 rounded-lg shadow-lg mt-12">
+        <h2 className="text-center text-3xl font-bold text-gray-900 mb-6">
+          Register
+        </h2>
+        <form onSubmit={handleSubmit}>
+          <div className="mb-4">
+            <label
+              htmlFor="email"
+              className="block text-sm font-medium text-gray-900"
+            >
+              Email:
+            </label>
+            <input
+              type="email"
+              id="email"
+              value={email}
+              placeholder="Enter your email"
+              className="block w-full rounded-md border-0 py-2 px-4 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-indigo-600 sm:text-sm"
+              onChange={(e) => setEmail(e.target.value)}
+            />
+          </div>
+          <div className="mb-4">
+            <label
+              htmlFor="password"
+              className="block text-sm font-medium text-gray-900"
+            >
+              Password:
+            </label>
+            <input
+              type="password"
+              id="password"
+              value={password}
+              placeholder="Enter your password"
+              className="block w-full rounded-md border-0 py-2 px-4 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-indigo-600 sm:text-sm"
+              onChange={(e) => setPassword(e.target.value)}
+            />
+          </div>
+          <div className="mb-6">
+            <label className="block text-sm font-medium text-gray-900 mb-2">
+              Role:
+            </label>
+            <div className="flex items-center space-x-4">
+              <label className="flex items-center">
+                <input
+                  type="radio"
+                  id="user"
+                  name="role"
+                  value="user"
+                  checked={role === "user"}
+                  onChange={(e) => setRole(e.target.value)}
+                  className="mr-2"
+                />
+                User
+              </label>
+              <label className="flex items-center">
+                <input
+                  type="radio"
+                  id="admin"
+                  name="role"
+                  value="admin"
+                  checked={role === "admin"}
+                  onChange={(e) => setRole(e.target.value)}
+                  className="mr-2"
+                />
+                Admin
+              </label>
             </div>
-            <div>
-              <label>Password:</label>
-              <input
-                type="password"
-                id="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-              />
-            </div>
-            <div>
-              <label>Role:</label>
-              <div>
-                <label>
-                  <input
-                    type="radio"
-                    id="user"
-                    name="role"
-                    value="user"
-                    checked={role === "user"}
-                    onChange={(e) => setRole(e.target.value)}
-                    className="mr-2"
-                  />
-                  User
-                </label>
-              </div>
-              <div>
-                <label>
-                  <input
-                    type="radio"
-                    id="admin"
-                    name="role"
-                    value="admin"
-                    checked={role === "admin"}
-                    onChange={(e) => setRole(e.target.value)}
-                    className="mr-2"
-                  />
-                  Admin
-                </label>
-              </div>
-            </div>
-            <div>
-              <button
-                type="submit"
-                className="bg-blue-500 p-2 text-center text-white"
-              >
-                Register
-              </button>
-            </div>
-          </form>
-        </div>
-        <p>
-          Already have an account?
-          <Link to={"/login"} className="text-blue-800 font-semibold">
+          </div>
+          <div>
+            <button
+              type="submit"
+              className="bg-teal-600 text-white py-2 px-4 rounded-md text-sm font-semibold shadow-sm hover:bg-teal-700 focus:outline-none focus:ring-2 focus:ring-teal-600 focus:ring-opacity-50"
+            >
+              Register
+            </button>
+          </div>
+        </form>
+        <p className="mt-6 text-sm text-gray-700">
+          Already have an account?{" "}
+          <Link to={"/login"} className="text-teal-600 font-semibold">
             Login
           </Link>
         </p>
-
         {message && (
-          <p className={error ? "text=red-500" : "text-green=500"}>{message}</p>
+          <p
+            className={`mt-4 text-sm ${
+              error ? "text-red-500" : "text-green-500"
+            }`}
+          >
+            {message}
+          </p>
         )}
       </div>
     </div>

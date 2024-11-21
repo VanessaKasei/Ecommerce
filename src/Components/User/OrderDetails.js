@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { toast, ToastContainer } from "react-toastify";
-
 const OrderDetails = () => {
   const [cartItems, setCartItems] = useState([]);
   const [shippingInfo, setShippingInfo] = useState({
@@ -13,6 +12,7 @@ const OrderDetails = () => {
   const [paymentMethod, setPaymentMethod] = useState("mpesa");
   const [paymentStatus, setPaymentStatus] = useState("payLater");
   const userId = useSelector((state) => state.user.userId);
+  const dispatch = useDispatch();
   console.log("user id is:", userId);
 
   useEffect(() => {
@@ -80,6 +80,8 @@ const OrderDetails = () => {
       const data = await response.json();
       console.log("Order placed successfully:", data);
       toast.success("Order placed successfylly!");
+      dispatch({ type: "CLEAR_CART" });
+
       navigate(`/confirmOrder/${userId}`);
     } catch (error) {
       console.error("Error placing order:", error);
@@ -89,7 +91,6 @@ const OrderDetails = () => {
 
   return (
     <div className="p-4 mx-auto container">
-      <div className="grid grid-cols-2 row-span-2">
       <h2 className="text-2xl font-semibold mb-4">Order Details</h2>
       <div className="overflow-x-auto">
         <table className="min-w-full bg-white shadow-md rounded border border-gray-200">
@@ -259,14 +260,13 @@ const OrderDetails = () => {
         <div className="mt-6">
           <button
             onClick={handlePlaceOrder}
-            className="w-full py-3 bg-teal-600 text-white font-semibold rounded hover:bg-teal-700"
+            className=" px-3 py-2  bg-teal-600 text-white font-semibold rounded hover:bg-teal-700"
           >
             Place Order
           </button>
         </div>
       </div>
       <ToastContainer />
-    </div>
     </div>
   );
 };

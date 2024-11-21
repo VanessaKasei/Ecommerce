@@ -5,6 +5,7 @@ import { useParams } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { addToCart } from "../../Redux/actions/cartActions";
+
 const ProductDetails = () => {
   const { id } = useParams();
   const [product, setProduct] = useState(null);
@@ -51,42 +52,31 @@ const ProductDetails = () => {
   };
 
   if (error) {
-    return <p>Error: {error}</p>;
+    return <p className="text-red-500 text-center mt-4">Error: {error}</p>;
   }
 
   if (!product) {
-    return <p>Loading...</p>;
+    return <p className="text-center mt-4">Loading...</p>;
   }
 
   return (
-    <div className="mx-auto container mt-6">
-      <div className="flex flex-col sm:flex-row">
-        <div className="sm:w-1/2 border border-solid border-gray-100">
-          {selectedVariation && selectedVariation.image ? (
-            <img
-              src={selectedVariation.image}
-              alt={product.name}
-              style={{ width: "300px", height: "auto" }}
-            />
-          ) : (
-            product.image && (
-              <img
-                src={product.image}
-                alt={product.name}
-                style={{ width: "300px", height: "auto" }}
-              />
-            )
-          )}
+    <div className="mx-auto container mt-10 px-4 max-w-3xl">
+      <div className="flex flex-col sm:flex-row bg-white shadow-lg rounded-lg overflow-hidden">
+        <div className="sm:w-1/2 p-4 flex items-center justify-center bg-gray-100">
+          <img
+            src={selectedVariation?.image || product.image}
+            alt={product.name}
+            style={{ width: "200px", height: "auto" }}
+          />
         </div>
 
-        <div className="sm:w-1/2 p-4">
-        <p className="font-bold text-xl">{product.name}</p>
-          <p className="text-lg">
-            Price: Ksh{" "}
-            {selectedVariation ? selectedVariation.price : product.generalPrice}
+        <div className="sm:w-1/2 p-6 space-y-4">
+          <h2 className="font-bold text-2xl text-gray-800">{product.name}</h2>
+          <p className="text-xl text-teal-700 font-semibold">
+            Price: Ksh {selectedVariation ? selectedVariation.price : product.generalPrice}
           </p>
 
-          <p className="font-semibold">
+          <p className="font-semibold text-sm text-green-600">
             {selectedVariation
               ? selectedVariation.stock > 0
                 ? "In stock"
@@ -96,14 +86,14 @@ const ProductDetails = () => {
               : "Out of stock"}
           </p>
 
-          <p>{product.description}</p>
+          <p className="text-gray-700">{product.description}</p>
 
           {product.variations && product.variations.length > 0 && (
             <button
-              className="bg-blue-500 text-white px-2 py-1 mt-2 flex items-center"
+              className="bg-blue-500 text-white px-4 py-2 mt-4 flex items-center justify-center rounded-md shadow-md hover:bg-blue-600 transition"
               onClick={handleToggleVariations}
             >
-              Available variations
+              Available Variations
               {showVariations ? (
                 <FaCaretUp className="ml-2" />
               ) : (
@@ -113,14 +103,14 @@ const ProductDetails = () => {
           )}
 
           {showVariations && (
-            <div className="mt-2">
+            <div className="mt-4 flex flex-wrap">
               {product.variations.map((variation) => (
                 <button
                   key={variation._id}
-                  className={`border px-2 py-1 m-1 ${
+                  className={`border px-3 py-1 rounded-md m-1 transition ${
                     selectedVariation?._id === variation._id
-                      ? "bg-teal-500 text-white"
-                      : "bg-gray-200"
+                      ? "bg-teal-500 text-white border-teal-500"
+                      : "bg-gray-200 text-gray-800 hover:bg-gray-300"
                   }`}
                   onClick={() => handleSelectVariation(variation)}
                 >
@@ -132,9 +122,9 @@ const ProductDetails = () => {
 
           <button
             onClick={handleAddToCart}
-            className="bg-teal-700 text-white p-2 rounded-md mt-4"
+            className="bg-teal-700 text-white px-6 py-2 rounded-md mt-4 shadow-md hover:bg-teal-800 transition"
           >
-            Add to cart
+            Add to Cart
           </button>
         </div>
       </div>

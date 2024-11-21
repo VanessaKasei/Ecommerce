@@ -1,14 +1,15 @@
 import React from "react";
+import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
-
+import { clearCart } from "../../Redux/actions/cartActions";
 const ProfilePage = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const handleLogout = () => {
-    // Remove user session (token and role)
     localStorage.removeItem("token");
     localStorage.removeItem("role");
-    // Navigate to the login page
+    dispatch(clearCart());
     navigate("/login");
   };
 
@@ -17,7 +18,6 @@ const ProfilePage = () => {
       <h1 className="text-2xl font-bold">User Profile</h1>
       <p className="mt-4">Welcome to your profile page!</p>
 
-      {/* Logout Button */}
       <button
         onClick={handleLogout}
         className="mt-4 bg-red-500 text-white py-2 px-4 rounded hover:bg-red-600"
