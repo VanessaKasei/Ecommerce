@@ -86,7 +86,6 @@ const ConfirmOrder = () => {
           >
             <div className="p-6 bg-teal-600 text-white">
               <span className="whitespace-nowrap">
-                {" "}
                 <h3 className="text-2xl font-semibold">
                   Order ID: {order._id}
                 </h3>

@@ -4,7 +4,6 @@ import { Link, useNavigate } from "react-router-dom";
 
 const NavBar = () => {
   const navigate = useNavigate();
-
   const handleCartClick = () => {
     navigate("/cart");
   };

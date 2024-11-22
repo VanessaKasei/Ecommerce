@@ -12,7 +12,6 @@ import OrderDetails from "./Components/User/OrderDetails";
 import ProductDetails from "./Components/User/ProductDetails";
 import UserProfile from "./Components/User/UserProfile";
 
-// Create a separate component for managing NavBar visibility
 function Layout() {
   const location = useLocation();
   
