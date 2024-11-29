@@ -66,7 +66,10 @@ const Home = () => {
               : null;
 
             return (
-              <div key={product._id} className=" flex flex-col justify-between h-full p-4 border">
+              <div
+                key={product._id}
+                className=" flex flex-col justify-between h-full p-4 border"
+              >
                 <Link to={`/product/${product._id}`}>
                   {hasVariations && selectedVariation?.image ? (
                     <img
