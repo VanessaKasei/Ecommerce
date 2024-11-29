@@ -11,11 +11,12 @@ const Home = () => {
   const [selectedVariations, setSelectedVariations] = useState({});
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
 
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const response = await fetch("http://localhost:5000/api/product");
+        const response = await fetch(`${API_BASE_URL}/product`);
         const result = await response.json();
         setProducts(result);
       } catch (error) {
