@@ -1,5 +1,9 @@
 import React, { useEffect, useState } from "react";
 
+
+const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
+
+
 const AdminDashboard = () => {
   const [products, setProducts] = useState([]);
   const [isEditing, setIsEditing] = useState(false);
@@ -14,11 +18,10 @@ const AdminDashboard = () => {
     variations: [{ size: "", color: "", material: "", price: "", image: "", stock: "" }],
   });
 
-  // Fetch all products from the API
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const response = await fetch("http://localhost:5000/api/product");
+        const response = await fetch(`${API_BASE_URL}/product`);
         const data = await response.json();
         setProducts(data);
       } catch (error) {
@@ -48,7 +51,7 @@ const AdminDashboard = () => {
   const handleAddProduct = async (e) => {
     e.preventDefault();
     try {
-      const response = await fetch("http://localhost:5000/api/product", {
+      const response = await fetch(`${API_BASE_URL}/product`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -67,7 +70,7 @@ const AdminDashboard = () => {
   const handleEditProduct = async (e) => {
     e.preventDefault();
     try {
-      await fetch(`http://localhost:5000/api/product/${currentProduct._id}`, {
+      await fetch(`${API_BASE_URL}/product/${currentProduct._id}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -88,7 +91,7 @@ const AdminDashboard = () => {
   // Delete a product
   const handleDeleteProduct = async (id) => {
     try {
-      await fetch(`http://localhost:5000/api/product/${id}`, {
+      await fetch(`${API_BASE_URL}/product/${id}`, {
         method: "DELETE",
       });
       setProducts(products.filter((product) => product._id !== id)); // Remove the deleted product from the list

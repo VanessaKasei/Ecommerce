@@ -6,6 +6,7 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { addToCart } from "../../Redux/actions/cartActions";
 
+const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
 const ProductDetails = () => {
   const { id } = useParams();
   const [product, setProduct] = useState(null);
@@ -17,7 +18,7 @@ const ProductDetails = () => {
   useEffect(() => {
     const fetchProduct = async () => {
       try {
-        const response = await fetch(`http://localhost:5000/api/product/${id}`);
+        const response = await fetch(`${API_BASE_URL}/product/${id}`);
         const result = await response.json();
         setProduct(result);
         if (result.variations && result.variations.length > 0) {

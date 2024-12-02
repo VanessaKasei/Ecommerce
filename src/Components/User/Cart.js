@@ -8,6 +8,9 @@ import {
   removeFromCart,
 } from "../../Redux/actions/cartActions";
 
+
+const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
+
 const Cart = () => {
   const userId = useSelector((state) => state.user.userId);
   console.log("user id is:", userId);
@@ -67,7 +70,7 @@ const Cart = () => {
     };
   
     try {
-      const response = await fetch("http://localhost:5000/api/cart/checkout", {
+      const response = await fetch(`${API_BASE_URL}/cart/checkout`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

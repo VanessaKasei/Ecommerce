@@ -4,6 +4,11 @@ import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { toast, ToastContainer } from "react-toastify";
 import { setUserId } from "../../Redux/actions/userActions";
+
+
+
+const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
+
 const Login = () => {
   const [password, setPassword] = useState("");
   const [email, setEmail] = useState("");
@@ -14,7 +19,7 @@ const Login = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await fetch("http://localhost:5000/api/users/login", {
+      const response = await fetch(`${API_BASE_URL}/users/login`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -55,7 +60,7 @@ const Login = () => {
 
   const fetchUserCart = async (userId) => {
     try {
-      const response = await fetch(`http://localhost:5000/api/cart/${userId}`, {
+      const response = await fetch(`${API_BASE_URL}/cart/${userId}`, {
         method: "GET",
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,

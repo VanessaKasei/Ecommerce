@@ -1,5 +1,8 @@
 import React, { useEffect, useState } from "react";
 
+
+const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
+
 const Orders = () => {
   const [orders, setOrders] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
@@ -9,7 +12,7 @@ const Orders = () => {
 
   useEffect(() => {
     const fetchOrders = async () => {
-      const response = await fetch(`http://localhost:5000/api/orders`);
+      const response = await fetch(`${API_BASE_URL}/orders`);
       const data = await response.json();
       if (data.orders) {
         console.log("Fetched orders:", data.orders);    
@@ -23,7 +26,7 @@ const Orders = () => {
   const handleStatusChange = (orderId, status) => {
     setStatusUpdate({ ...statusUpdate, [orderId]: status });
 
-    fetch(`http://localhost:5000/api/orders/${orderId}/status`, {
+    fetch(`${API_BASE_URL}/orders/${orderId}/status`, {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",

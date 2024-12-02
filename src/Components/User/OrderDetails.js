@@ -2,6 +2,9 @@ import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { toast, ToastContainer } from "react-toastify";
+
+const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
+
 const OrderDetails = () => {
   const [cartItems, setCartItems] = useState([]);
   const [shippingInfo, setShippingInfo] = useState({
@@ -19,7 +22,7 @@ const OrderDetails = () => {
     const fetchCart = async () => {
       try {
         const response = await fetch(
-          `http://localhost:5000/api/cart/${userId}`
+          `${API_BASE_URL}/cart/${userId}`
         );
         if (!response.ok) {
           throw new Error("Failed to fetch cart");
@@ -65,7 +68,7 @@ const OrderDetails = () => {
     };
 
     try {
-      const response = await fetch("http://localhost:5000/api/orders/create", {
+      const response = await fetch(`${API_BASE_URL}/orders/create`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

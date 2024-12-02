@@ -2,12 +2,13 @@ import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 
+const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
+
 const ConfirmOrder = () => {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
-
   const userId = useSelector((state) => state.user.userId);
   console.log("Fetched userId:", userId);
 
@@ -26,7 +27,7 @@ const ConfirmOrder = () => {
     const fetchOrderDetails = async () => {
       try {
         const response = await fetch(
-          `http://localhost:5000/api/orders/${userId}`
+          `${API_BASE_URL}/orders/${userId}`
         );
         if (!response.ok) {
           throw new Error("Failed to fetch order details");

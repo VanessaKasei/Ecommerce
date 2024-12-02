@@ -1,17 +1,17 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { addToCart } from "../../Redux/actions/cartActions";
+
+const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
 
 const Home = () => {
   const [error, setError] = useState(null);
   const [products, setProducts] = useState([]);
   const [selectedVariations, setSelectedVariations] = useState({});
-  const navigate = useNavigate();
   const dispatch = useDispatch();
-  const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
 
   useEffect(() => {
     const fetchProducts = async () => {
