@@ -6,6 +6,7 @@ import "react-toastify/dist/ReactToastify.css";
 import { addToCart } from "../../Redux/actions/cartActions";
 
 const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
+console.log("API Base URL:", process.env.REACT_APP_API_BASE_URL);
 
 const Home = () => {
   const [error, setError] = useState(null);
@@ -113,7 +114,7 @@ const Home = () => {
 
                 <button
                   onClick={() => handleAddToCart(product)}
-                  className="bg-teal-700 text-white p-2 rounded-md mt-2 self-end"
+                  className="bg-blue-700 text-white p-2 rounded-md mt-2 self-end"
                 >
                   Add to cart
                 </button>
