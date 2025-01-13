@@ -114,9 +114,9 @@ const Home = () => {
 
                 <button
                   onClick={() => handleAddToCart(product)}
-                  className="bg-green-700 text-white p-2 rounded-md mt-2 self-end"
+                  className="bg-teal-700 text-white p-2 rounded-md mt-2 self-end"
                 >
-                  Add to cart Please
+                  Add to cart
                 </button>
               </div>
             );
