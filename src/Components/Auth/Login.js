@@ -29,6 +29,7 @@ const Login = () => {
 
       if (!response.ok) {
         const errorData = await response.json();
+        console.error("Login error:", errorData);
         alert(errorData.message);
         return;
       }
