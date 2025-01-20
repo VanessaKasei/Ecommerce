@@ -128,6 +128,9 @@ const Login = () => {
             >
               Login
             </button>
+            Don't have an account?<Link to={"/register"} className="text-teal-600 font-semibold">
+              Sign Up
+            </Link>
           </div>
         </form>
       </div>

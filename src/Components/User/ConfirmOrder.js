@@ -169,7 +169,7 @@ const ConfirmOrder = () => {
                           {product.quantity}
                         </td>
                         <td className="px-4 py-2 text-gray-600">
-                          ${product.price}
+                          Ksh{product.price}
                         </td>
                         <td className="px-4 py-2 text-gray-600">
                           {product.variationDetails
