@@ -5,14 +5,13 @@ import { useNavigate } from "react-router-dom";
 import { toast, ToastContainer } from "react-toastify";
 import { setUserId } from "../../Redux/actions/userActions";
 
-
-
 const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
 
 const Login = () => {
   const [password, setPassword] = useState("");
   const [email, setEmail] = useState("");
-  const [cartItems, setCartItems] = useState([]); 
+  // eslint-disable-next-line no-unused-vars
+  const [cartItems, setCartItems] = useState([]);
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
@@ -82,8 +81,8 @@ const Login = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-start justify-center  bg-gray-100 ">
-      <div className="w-1/2 bg-white p-8 rounded-lg shadow-lg mt-12">
+    <div className="min-h-screen flex items-center justify-center bg-gray-100 px-4 sm:px-6 lg:px-8">
+      <div className="w-full max-w-md bg-white p-8 rounded-lg shadow-lg mt-12">
         <div>
           <h2 className="text-center text-3xl font-bold text-gray-900 mb-6">
             Login
@@ -125,7 +124,7 @@ const Login = () => {
           <div>
             <button
               type="submit"
-              className=" bg-teal-600 text-white py-2 px-4 rounded-md text-sm font-semibold shadow-sm hover:bg-teal-700 focus:outline-none focus:ring-2 focus:ring-teal-600 focus:ring-opacity-50"
+              className="w-1/3 bg-teal-600 text-white py-2 px-4 rounded-md text-sm font-semibold shadow-sm hover:bg-teal-700 focus:outline-none focus:ring-2 focus:ring-teal-600 focus:ring-opacity-50"
             >
               Login
             </button>
