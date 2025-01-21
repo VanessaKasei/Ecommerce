@@ -10,7 +10,6 @@ const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
 const Login = () => {
   const [password, setPassword] = useState("");
   const [email, setEmail] = useState("");
-  // eslint-disable-next-line no-unused-vars
   const [cartItems, setCartItems] = useState([]);
   const navigate = useNavigate();
   const dispatch = useDispatch();
